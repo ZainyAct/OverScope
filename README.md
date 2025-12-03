@@ -49,7 +49,7 @@ You'll need:
 
 1. **Clone the repo:**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/ZainyAct/OverScope.git
    cd RubyResProj
    ```
 
