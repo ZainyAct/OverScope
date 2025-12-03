@@ -1,0 +1,50 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title">Billing</h1>
+    <p class="tf-page-subtitle">
+      Manage your subscription and payment methods.
+    </p>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <section class="tf-card tf-card--subtle">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Current Subscription</h2>
+    </div>
+
+    <div class="tf-stack">
+      <div style="padding: 1.5rem; background: var(--tf-color-bg-subtle); border-radius: 6px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <strong style="font-size: 1.2rem;"><%= @subscription[:plan] %> Plan</strong>
+            <p class="tf-muted" style="margin-top: 0.3rem;">
+              Status: <span class="tf-badge tf-badge--success"><%= @subscription[:status] %></span>
+            </p>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 1.5rem; font-weight: bold;">$99/month</div>
+            <p class="tf-muted" style="font-size: 0.85rem; margin-top: 0.2rem;">
+              Renews <%= @subscription[:current_period_end].strftime("%b %-d, %Y") %>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tf-page-actions">
+        <%= link_to "Update Payment Method", "#", class: "tf-btn tf-btn--secondary" %>
+        <%= link_to "Change Plan", "#", class: "tf-btn tf-btn--ghost" %>
+      </div>
+    </div>
+  </section>
+
+  <section class="tf-card tf-card--subtle" style="margin-top: 1.5rem;">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Invoice History</h2>
+    </div>
+    <div class="tf-empty-state">
+      <p>No invoices yet. Invoices will appear here after your first billing cycle.</p>
+    </div>
+  </section>
+</div>
+

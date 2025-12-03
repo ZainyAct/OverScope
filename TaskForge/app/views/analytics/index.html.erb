@@ -1,0 +1,146 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title">Analytics</h1>
+    <p class="tf-page-subtitle">
+      Productivity metrics, completion velocity, and forecast risk zones.
+    </p>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <!-- Fire Alarm Alert -->
+  <% if @fire_alarm['alert'] %>
+    <div class="tf-alert tf-alert--danger" style="margin-bottom: 1.5rem;">
+      <strong>⚠️ Alert:</strong> <%= @fire_alarm['message'] %>
+    </div>
+  <% end %>
+
+  <!-- Key Metrics Grid -->
+  <div class="tf-card-grid" style="margin-bottom: 1.5rem;">
+    <div class="tf-card tf-card--subtle">
+      <div class="tf-stack">
+        <h3 class="tf-card-title">Completion Velocity</h3>
+        <div style="font-size: 2rem; font-weight: bold; color: var(--tf-color-primary);">
+          <%= @completion_velocity[:tasks_completed] %>
+        </div>
+        <p class="tf-muted">Tasks completed in last 30 days</p>
+        <p class="tf-muted" style="font-size: 0.9rem;">
+          <%= number_with_precision(@completion_velocity[:daily_average], precision: 1) %> tasks/day average
+        </p>
+      </div>
+    </div>
+
+    <div class="tf-card tf-card--subtle">
+      <div class="tf-stack">
+        <h3 class="tf-card-title">Productivity</h3>
+        <div style="font-size: 2rem; font-weight: bold; color: var(--tf-color-primary);">
+          <%= number_with_precision(@productivity_metrics[:avg_completion_time], precision: 1) %>h
+        </div>
+        <p class="tf-muted">Average completion time</p>
+        <p class="tf-muted" style="font-size: 0.9rem;">
+          <%= @productivity_metrics[:completed_tasks] %> of <%= @productivity_metrics[:total_tasks] %> completed
+        </p>
+      </div>
+    </div>
+
+    <div class="tf-card tf-card--subtle">
+      <div class="tf-stack">
+        <h3 class="tf-card-title">Estimation Accuracy</h3>
+        <div style="font-size: 2rem; font-weight: bold; color: var(--tf-color-primary);">
+          <% 
+            # avgAccuracy is a ratio (actual/estimated), where 1.0 = perfect
+            # Convert to percentage: min(ratio, 1/ratio) gives accuracy percentage
+            ratio = @estimation_stats['avgAccuracy'] || 1.0
+            accuracy_pct = ratio > 0 ? [ratio, 1.0 / ratio].min * 100 : 0
+            accuracy_pct = [accuracy_pct, 100].min # Cap at 100%
+          %>
+          <%= number_with_precision(accuracy_pct, precision: 1) %>%
+        </div>
+        <p class="tf-muted">Average accuracy</p>
+        <p class="tf-muted" style="font-size: 0.9rem;">
+          Based on <%= @estimation_stats['totalTasks'] || 0 %> tracked tasks
+          <% if ratio > 0 && ratio != 1.0 %>
+            <br>
+            <% if ratio > 1.0 %>
+              <span style="color: var(--tf-color-warning);">Avg underestimate: <%= number_with_precision((ratio - 1.0) * 100, precision: 1) %>%</span>
+            <% elsif ratio < 1.0 %>
+              <span style="color: var(--tf-color-warning);">Avg overestimate: <%= number_with_precision((1.0 - ratio) * 100, precision: 1) %>%</span>
+            <% end %>
+          <% end %>
+        </p>
+      </div>
+    </div>
+
+    <div class="tf-card tf-card--subtle">
+      <div class="tf-stack">
+        <h3 class="tf-card-title">Overdue Tasks</h3>
+        <div style="font-size: 2rem; font-weight: bold; color: <%= @productivity_metrics[:overdue_tasks] > 0 ? 'var(--tf-color-danger)' : 'var(--tf-color-success)' %>;">
+          <%= @productivity_metrics[:overdue_tasks] %>
+        </div>
+        <p class="tf-muted">Tasks past due date</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Metrics -->
+  <section class="tf-card tf-card--subtle">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Team Performance</h2>
+    </div>
+
+    <% if @user_metrics.any? %>
+      <div class="tf-table-scroll">
+        <table class="tf-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Avg Completion</th>
+              <th>Completed (30d)</th>
+              <th>Current Load</th>
+              <th>Capacity</th>
+              <th>Pressure Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @user_metrics.each do |user, metrics| %>
+              <tr>
+                <td><%= user.email %></td>
+                <td><%= number_with_precision(metrics['avgCompletionHours'] || 0, precision: 1) %>h</td>
+                <td><%= metrics['tasksCompletedLast30Days'] || 0 %></td>
+                <td><%= number_with_precision(metrics['currentLoadHours'] || 0, precision: 1) %>h</td>
+                <td><%= metrics['capacityHours'] || 40 %>h</td>
+                <td>
+                  <% pressure = metrics['pressureScore'] || 0 %>
+                  <span class="tf-badge <%= pressure > 0.7 ? 'tf-badge--priority-high' : pressure > 0.4 ? 'tf-badge--muted' : 'tf-badge--success' %>">
+                    <%= number_with_precision(pressure, precision: 2) %>
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="tf-empty-state">
+        <p>No user metrics available yet.</p>
+      </div>
+    <% end %>
+  </section>
+
+  <!-- Pressure Alerts -->
+  <% if @pressure_alerts.any? %>
+    <section class="tf-card tf-card--subtle" style="margin-top: 1.5rem;">
+      <div class="tf-card-header">
+        <h2 class="tf-card-title">⚠️ High Pressure Alerts</h2>
+      </div>
+      <div class="tf-stack">
+        <% @pressure_alerts.each do |alert| %>
+          <div class="tf-alert tf-alert--warning">
+            <strong><%= alert['userId'] %></strong>: <%= alert['message'] %>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+</div>
+

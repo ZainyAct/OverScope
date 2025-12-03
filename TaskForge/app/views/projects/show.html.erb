@@ -1,0 +1,94 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title"><%= @project.name %></h1>
+    <p class="tf-page-subtitle">
+      <%= @project.description.presence || "No description yet. Use this space to explain the goal and scope of the project." %>
+    </p>
+  </div>
+  <div class="tf-page-actions">
+    <%= link_to "New task", new_project_task_path(@project), class: "tf-btn" %>
+    <%= link_to "Edit", edit_project_path(@project), class: "tf-btn tf-btn--secondary" %>
+    <%= link_to "Back to projects", projects_path, class: "tf-btn tf-btn--ghost tf-btn--sm" %>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <section class="tf-card tf-card--subtle">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Tasks in this project</h2>
+      <span class="tf-card-meta">
+        <%= pluralize(@tasks.size, "task") %>
+      </span>
+    </div>
+
+    <% if @tasks.any? %>
+      <div class="tf-table-scroll">
+        <table class="tf-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Due</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @tasks.each do |task| %>
+              <tr>
+                <td><%= link_to task.title, project_task_path(@project, task), class: "tf-muted" %></td>
+                <td>
+                  <% status_class =
+                    case task.status
+                    when "open" then "tf-badge tf-badge--open"
+                    when "in_progress" then "tf-badge tf-badge--in-progress"
+                    when "completed" then "tf-badge tf-badge--completed"
+                    else "tf-badge tf-badge--muted"
+                    end %>
+                  <span class="<%= status_class %>">
+                    <%= task.status.to_s.humanize %>
+                  </span>
+                </td>
+                <td>
+                  <% badge_class =
+                    if task.priority >= 4
+                      "tf-badge tf-badge--priority-high"
+                    elsif task.priority <= 2
+                      "tf-badge tf-badge--priority-low"
+                    else
+                      "tf-badge tf-badge--muted"
+                    end %>
+                  <span class="<%= badge_class %>">
+                    P<%= task.priority %>
+                  </span>
+                </td>
+                <td>
+                  <% if task.due_date.present? %>
+                    <%= task.due_date.to_date.strftime("%b %-d") %>
+                  <% else %>
+                    <span class="tf-muted">No due date</span>
+                  <% end %>
+                </td>
+                <td style="text-align: right;">
+                  <%= link_to "Open", project_task_path(@project, task), class: "tf-btn tf-btn--ghost tf-btn--sm" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="tf-empty-state">
+        <strong>No tasks in this project yet.</strong>
+        <div style="margin-top: 0.3rem;">
+          Create a few tasks to start tracking work for this project.
+        </div>
+        <div style="margin-top: 0.8rem;">
+          <%= link_to "Add a task", new_project_task_path(@project), class: "tf-btn" %>
+        </div>
+      </div>
+    <% end %>
+  </section>
+</div>
+
+

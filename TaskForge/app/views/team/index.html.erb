@@ -1,0 +1,81 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title">Team</h1>
+    <p class="tf-page-subtitle">
+      User profiles, roles, and capacity settings.
+    </p>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <section class="tf-card tf-card--subtle">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Team Members</h2>
+      <p class="tf-card-meta">
+        <%= pluralize(@user_data.count, "member") %> in this organization
+      </p>
+    </div>
+
+    <% if @user_data.any? %>
+      <div class="tf-table-scroll">
+        <table class="tf-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Tasks</th>
+              <th>Completed (30d)</th>
+              <th>Avg Completion</th>
+              <th>Current Load</th>
+              <th>Capacity</th>
+              <th>Utilization</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @user_data.each do |data| %>
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="tf-user-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                      <%= data[:user].email.first.upcase %>
+                    </span>
+                    <span><%= data[:user].email %></span>
+                  </div>
+                </td>
+                <td><%= data[:tasks_count] %></td>
+                <td><%= data[:completed_last_30_days] %></td>
+                <td><%= number_with_precision(data[:avg_completion_hours], precision: 1) %>h</td>
+                <td><%= number_with_precision(data[:current_load], precision: 1) %>h</td>
+                <td><%= data[:capacity] %>h</td>
+                <td>
+                  <% utilization = data[:capacity] > 0 ? (data[:current_load] / data[:capacity].to_f * 100) : 0 %>
+                  <span class="tf-badge <%= badge_class_for_status(utilization_status(utilization)) %>">
+                    <%= number_with_precision(utilization, precision: 0) %>%
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="tf-empty-state">
+        <p>No team members found.</p>
+      </div>
+    <% end %>
+  </section>
+</div>
+
+<% content_for :head do %>
+  <style>
+    .tf-user-avatar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--tf-color-primary);
+      color: white;
+      font-weight: 600;
+    }
+  </style>
+<% end %>
+

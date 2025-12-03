@@ -1,0 +1,117 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title">Organization overview</h1>
+    <p class="tf-page-subtitle">
+      Track project throughput, task completion, and daily flow for your organization.
+    </p>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <section class="tf-card">
+    <div class="tf-card-header">
+      <div>
+        <h2 class="tf-card-title">Last 30 days</h2>
+        <p class="tf-card-meta">
+          High‑level view of how work is flowing across all projects.
+        </p>
+      </div>
+      <div class="tf-pill">
+        <span>Organization</span>
+        <% if current_organization %>
+          <strong><%= current_organization.name %></strong>
+        <% else %>
+          <span>Not selected</span>
+        <% end %>
+      </div>
+    </div>
+
+    <% if @org_stats.present? %>
+      <div class="tf-kpi-grid">
+        <div class="tf-kpi-card">
+          <div class="tf-kpi-label">Tasks created</div>
+          <div class="tf-kpi-value"><%= @org_stats["tasks_created_30d"] %></div>
+          <div class="tf-kpi-trend">
+            Total tasks opened in the last 30 days.
+          </div>
+        </div>
+
+        <div class="tf-kpi-card">
+          <div class="tf-kpi-label">Tasks completed</div>
+          <div class="tf-kpi-value"><%= @org_stats["tasks_completed_30d"] %></div>
+          <div class="tf-kpi-trend">
+            Work items finished by your teams.
+          </div>
+        </div>
+
+        <div class="tf-kpi-card">
+          <div class="tf-kpi-label">Average lead time (hrs)</div>
+          <div class="tf-kpi-value">
+            <%= (@org_stats["avg_lead_time_hours"] || 0).round(1) %>
+          </div>
+          <div class="tf-kpi-trend">
+            Time from creation to completion.
+          </div>
+        </div>
+
+        <div class="tf-kpi-card">
+          <div class="tf-kpi-label">Open tasks right now</div>
+          <div class="tf-kpi-value"><%= @org_stats["open_tasks_now"] %></div>
+          <div class="tf-kpi-trend">
+            Items currently in progress or waiting.
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="tf-empty-state">
+        <strong>No activity yet.</strong>
+        <div style="margin-top: 0.3rem;">
+          Create a project and start adding tasks to see organization‑level metrics here.
+        </div>
+      </div>
+    <% end %>
+  </section>
+
+  <section class="tf-card tf-card--subtle">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Daily throughput</h2>
+      <span class="tf-card-meta">
+        Rolling 30‑day view of tasks created and completed.
+      </span>
+    </div>
+
+    <% if @metrics.present? %>
+      <div class="tf-table-scroll">
+        <table class="tf-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Created</th>
+              <th>Completed</th>
+              <th>Open at end of day</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @metrics.each do |m| %>
+              <tr>
+                <td><%= m.date.strftime("%b %-d") %></td>
+                <td><%= m.tasks_created %></td>
+                <td><%= m.tasks_completed %></td>
+                <td><%= m.open_tasks_end_of_day %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="tf-empty-state">
+        <strong>No daily metrics yet.</strong>
+        <div style="margin-top: 0.3rem;">
+          As tasks move through your workflow, aggregate metrics will appear here automatically.
+        </div>
+      </div>
+    <% end %>
+  </section>
+</div>
+
+

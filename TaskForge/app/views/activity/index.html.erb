@@ -1,0 +1,56 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title">Activity</h1>
+    <p class="tf-page-subtitle">
+      Recent events and updates across your organization.
+    </p>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <section class="tf-card tf-card--subtle">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Recent Activity</h2>
+      <p class="tf-card-meta">
+        Last 100 events
+      </p>
+    </div>
+
+    <% if @events_by_date.any? %>
+      <div class="tf-stack" style="gap: 2rem;">
+        <% @events_by_date.each do |date, events| %>
+          <div>
+            <h3 style="margin-bottom: 1rem; font-size: 1rem; color: var(--tf-color-muted);">
+              <%= date.strftime("%B %-d, %Y") %>
+            </h3>
+            <div class="tf-stack" style="gap: 0.8rem;">
+              <% events.each do |event| %>
+                <div style="padding: 1rem; background: var(--tf-color-bg-subtle); border-radius: 6px; border-left: 3px solid var(--tf-color-primary);">
+                  <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                      <strong><%= event.event_type.humanize %></strong>
+                      <p class="tf-muted" style="margin-top: 0.3rem; font-size: 0.9rem;">
+                        <strong><%= event.task_title %></strong> in <strong><%= event.project_name %></strong>
+                      </p>
+                      <p class="tf-muted" style="margin-top: 0.2rem; font-size: 0.85rem;">
+                        <%= time_ago_in_words(event.created_at) %> ago
+                      </p>
+                    </div>
+                    <span class="tf-badge">
+                      <%= event.created_at.strftime("%-I:%M %p") %>
+                    </span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="tf-empty-state">
+        <p>No activity yet. Task events will appear here as work progresses.</p>
+      </div>
+    <% end %>
+  </section>
+</div>
+

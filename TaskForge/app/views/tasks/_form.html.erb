@@ -1,0 +1,93 @@
+<%= form_with(model: [@project, @task], class: "tf-form") do |f| %>
+  <% if @task.errors.any? %>
+    <div class="tf-empty-state" style="border-style: solid; border-color: rgba(248,113,113,0.6);">
+      <strong><%= pluralize(@task.errors.count, "error") %> prevented this task from being saved.</strong>
+      <ul style="margin: 0.4rem 0 0; padding-left: 1.2rem; text-align: left; font-size: 0.8rem;">
+        <% @task.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="tf-field">
+    <%= f.label :title, class: "tf-label" %>
+    <%= f.text_field :title, class: "tf-input", placeholder: "Summarize the work to be done" %>
+  </div>
+
+  <div class="tf-field">
+    <%= f.label :description, class: "tf-label" %>
+    <%= f.text_area :description,
+                    rows: 5,
+                    class: "tf-textarea",
+                    placeholder: "Add enough context for someone else to pick this up." %>
+  </div>
+
+  <div class="tf-stack tf-stack--row">
+    <div class="tf-field" style="min-width: 160px; max-width: 220px;">
+      <%= f.label :status, class: "tf-label" %>
+      <%= f.select :status,
+                   [["Open", "open"], ["In progress", "in_progress"], ["Completed", "completed"]],
+                   {},
+                   class: "tf-select" %>
+    </div>
+
+    <div class="tf-field" style="min-width: 160px; max-width: 220px;">
+      <%= f.label :priority, class: "tf-label" %>
+      <%= f.number_field :priority,
+                         in: 1..5,
+                         class: "tf-input",
+                         placeholder: "1–5" %>
+      <span class="tf-muted">
+        1 = lowest urgency, 5 = highest.
+      </span>
+    </div>
+
+    <div class="tf-field" style="min-width: 180px; max-width: 230px;">
+      <%= f.label :due_date, class: "tf-label" %>
+      <%= f.date_field :due_date, class: "tf-input" %>
+    </div>
+  </div>
+
+  <div class="tf-stack tf-stack--row" data-controller="task-estimate">
+    <div class="tf-field" style="min-width: 160px; max-width: 220px;">
+      <%= f.label :complexity, class: "tf-label" %>
+      <%= f.select :complexity,
+                   [["Very Simple", 1], ["Simple", 2], ["Medium", 3], ["Complex", 4], ["Very Complex", 5]],
+                   { selected: @task.complexity || 3 },
+                   class: "tf-select",
+                   data: { action: "change->task-estimate#estimate" } %>
+      <span class="tf-muted">
+        1 = simplest, 5 = most complex.
+      </span>
+    </div>
+
+    <div class="tf-field" style="min-width: 160px; max-width: 220px;">
+      <%= f.label :estimate_hours, class: "tf-label" %>
+      <%= f.number_field :estimate_hours,
+                         min: 1,
+                         step: 0.5,
+                         class: "tf-input",
+                         placeholder: "Auto-estimated",
+                         data: { "task-estimate-target": "estimate" } %>
+      <span class="tf-muted">
+        Estimated hours to complete.
+      </span>
+      <button type="button" 
+              class="tf-btn tf-btn--ghost tf-btn--sm" 
+              style="margin-top: 0.3rem;"
+              data-action="click->task-estimate#estimate">
+        Auto-estimate
+      </button>
+    </div>
+  </div>
+
+  <div class="tf-page-actions" style="margin-top: 0.7rem;">
+    <%= f.submit class: "tf-btn" %>
+    <%= link_to "Cancel",
+                @task.persisted? ? project_task_path(@project, @task) : project_tasks_path(@project),
+                class: "tf-btn tf-btn--ghost" %>
+  </div>
+<% end %>
+
+

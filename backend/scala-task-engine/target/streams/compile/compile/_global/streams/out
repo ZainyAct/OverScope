@@ -1,0 +1,6 @@
+[error] /home/zainm/Documents/code/RubyResProj/backend/scala-task-engine/src/main/scala/com/taskforge/TaskEngine.scala:230:67: type mismatch;
+[error]  found   : scala.collection.immutable.Map[String,AnyVal]
+[error]  required: Map[String,Double]
+[error]           complete(EstimateResponse(estimate, "weighted_average", breakdown))
+[error]                                                                   ^
+[error] one error found

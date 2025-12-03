@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: taskforge_development
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  rails-app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.rails
+    command: >
+      sh -c "
+        echo 'Checking/installing gems...' &&
+        bundle check || bundle install &&
+        echo 'Setting up database...' &&
+        bundle exec rails db:create 2>/dev/null || echo 'Database may already exist' &&
+        bundle exec rails db:migrate &&
+        echo 'Removing stale server PID (if any)...' &&
+        rm -f tmp/pids/server.pid &&
+        echo 'Starting Rails server...' &&
+        bundle exec rails server -b 0.0.0.0
+      "
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: taskforge_development
+      REDIS_URL: redis://redis:6379/0
+      SCALA_TASK_ENGINE_URL: http://scala-task-engine:8080
+      RAILS_ENV: development
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-dummy_secret_key_base_for_development_only_change_in_production}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../TaskForge:/app
+      - bundle_cache:/usr/local/bundle
+
+  sidekiq:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.rails
+    command: bundle exec sidekiq
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: taskforge_development
+      REDIS_URL: redis://redis:6379/0
+      RAILS_ENV: development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../TaskForge:/app
+      - bundle_cache:/usr/local/bundle
+
+  scala-task-engine:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.scala
+    ports:
+      - "8080:8080"
+    environment:
+      - SCALA_ENV=development
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/taskforge_development
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:
+  bundle_cache:
+

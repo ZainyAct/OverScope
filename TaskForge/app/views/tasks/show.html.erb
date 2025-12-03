@@ -1,0 +1,77 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title"><%= @task.title %></h1>
+    <p class="tf-page-subtitle">
+      Task in <%= link_to @project.name, project_path(@project), class: "tf-muted" %>
+    </p>
+  </div>
+  <div class="tf-page-actions">
+    <%= link_to "Edit", edit_project_task_path(@project, @task), class: "tf-btn tf-btn--secondary" %>
+    <%= link_to "Back to tasks",
+                project_tasks_path(@project),
+                class: "tf-btn tf-btn--ghost tf-btn--sm" %>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <section class="tf-card tf-card--subtle">
+    <div class="tf-card-header">
+      <div class="tf-stack tf-stack--row">
+        <% status_class =
+          case @task.status
+          when "open" then "tf-badge tf-badge--open"
+          when "in_progress" then "tf-badge tf-badge--in-progress"
+          when "completed" then "tf-badge tf-badge--completed"
+          else "tf-badge tf-badge--muted"
+          end %>
+        <span class="<%= status_class %>">
+          <%= @task.status.to_s.humanize %>
+        </span>
+
+        <% badge_class =
+          if @task.priority >= 4
+            "tf-badge tf-badge--priority-high"
+          elsif @task.priority <= 2
+            "tf-badge tf-badge--priority-low"
+          else
+            "tf-badge tf-badge--muted"
+          end %>
+        <span class="<%= badge_class %>">
+          Priority P<%= @task.priority %>
+        </span>
+
+        <span class="tf-pill">
+          Created <%= time_ago_in_words(@task.created_at) %> ago
+        </span>
+
+        <% if @task.due_date.present? %>
+          <span class="tf-pill">
+            Due <%= @task.due_date.to_date.strftime("%b %-d, %Y") %>
+          </span>
+        <% end %>
+      </div>
+
+      <div class="tf-page-actions">
+        <%= button_to "Delete",
+                      project_task_path(@project, @task),
+                      method: :delete,
+                      data: { confirm: "Are you sure you want to delete this task?" },
+                      class: "tf-btn tf-btn--danger tf-btn--sm" %>
+      </div>
+    </div>
+
+    <div class="tf-stack" style="margin-top: 0.6rem;">
+      <h2 class="tf-card-title">Description</h2>
+      <% if @task.description.present? %>
+        <p class="tf-muted" style="white-space: pre-wrap;"><%= @task.description %></p>
+      <% else %>
+        <p class="tf-muted">
+          No description yet. Add enough detail so that someone else can complete this task
+          without extra back‑and‑forth.
+        </p>
+      <% end %>
+    </div>
+  </section>
+</div>
+
+

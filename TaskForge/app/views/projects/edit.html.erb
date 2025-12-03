@@ -1,0 +1,16 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title">Edit project</h1>
+    <p class="tf-page-subtitle">
+      Update the name or description for this project.
+    </p>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <section class="tf-card tf-card--subtle">
+    <%= render "form", project: @project %>
+  </section>
+</div>
+
+

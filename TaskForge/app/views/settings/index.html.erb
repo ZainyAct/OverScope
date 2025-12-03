@@ -1,0 +1,66 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title">Settings</h1>
+    <p class="tf-page-subtitle">
+      Organization preferences and configuration.
+    </p>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <section class="tf-card tf-card--subtle">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Organization Settings</h2>
+    </div>
+
+    <div class="tf-stack" style="gap: 1.5rem;">
+      <div class="tf-field">
+        <label class="tf-label">Organization Name</label>
+        <input type="text" class="tf-input" value="<%= @organization.name %>" disabled>
+        <span class="tf-muted" style="font-size: 0.85rem;">
+          Organization name cannot be changed.
+        </span>
+      </div>
+
+      <div class="tf-field">
+        <label class="tf-label">Default Capacity (hours/week)</label>
+        <input type="number" class="tf-input" value="40" min="1" max="80">
+        <span class="tf-muted" style="font-size: 0.85rem;">
+          Default capacity for new team members.
+        </span>
+      </div>
+
+      <div class="tf-field">
+        <label class="tf-label">
+          <input type="checkbox"> Enable email notifications
+        </label>
+        <span class="tf-muted" style="font-size: 0.85rem; display: block; margin-top: 0.3rem;">
+          Receive email updates for task assignments and completions.
+        </span>
+      </div>
+
+      <div class="tf-page-actions">
+        <button class="tf-btn">Save Changes</button>
+        <button class="tf-btn tf-btn--ghost">Cancel</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tf-card tf-card--subtle" style="margin-top: 1.5rem;">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Integrations</h2>
+    </div>
+    <div class="tf-stack">
+      <div style="padding: 1rem; background: var(--tf-color-bg-subtle); border-radius: 6px;">
+        <strong>Webhooks</strong>
+        <p class="tf-muted" style="margin-top: 0.3rem; font-size: 0.9rem;">
+          Configure webhooks to trigger external systems when tasks are created or completed.
+        </p>
+        <div style="margin-top: 0.8rem;">
+          <button class="tf-btn tf-btn--secondary tf-btn--sm">Add Webhook</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+

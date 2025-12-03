@@ -1,0 +1,90 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title">Schedules</h1>
+    <p class="tf-page-subtitle">
+      Weekly team schedule and optimized task assignments.
+    </p>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <!-- Optimized Schedule -->
+  <section class="tf-card tf-card--subtle">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Optimized Schedule</h2>
+      <p class="tf-card-meta">
+        Suggested assignments from Scala optimizer (Score: <%= @optimized_schedule['score'] || 0 %>)
+      </p>
+    </div>
+
+    <% if @optimized_schedule['assignments']&.any? %>
+      <div class="tf-stack" style="gap: 1rem;">
+        <% @optimized_schedule['assignments'].each do |assignment| %>
+          <div class="tf-card" style="padding: 1rem;">
+            <div class="tf-stack">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong>User: <%= assignment['userId'] %></strong>
+                <span class="tf-badge">
+                  <%= assignment['totalHours'] || 0 %>h total
+                </span>
+              </div>
+              <div style="margin-top: 0.5rem;">
+                <p class="tf-muted" style="font-size: 0.9rem;">
+                  <%= assignment['taskIds']&.count || 0 %> tasks assigned
+                </p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="tf-empty-state">
+        <p>No optimized schedule available. Create tasks to see suggestions.</p>
+      </div>
+    <% end %>
+  </section>
+
+  <!-- Weekly Schedule View -->
+  <section class="tf-card tf-card--subtle" style="margin-top: 1.5rem;">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Weekly Timeline</h2>
+    </div>
+
+    <% if @weekly_schedule.any? %>
+      <div class="tf-stack" style="gap: 1.5rem;">
+        <% @weekly_schedule.sort.each do |week_start, week_data| %>
+          <div>
+            <h3 style="margin-bottom: 0.8rem; font-size: 1.1rem;">
+              Week of <%= week_start.strftime("%B %-d, %Y") %>
+            </h3>
+            <div class="tf-stack" style="gap: 0.5rem;">
+              <% week_data[:tasks]&.each do |task| %>
+                <div style="padding: 0.8rem; background: var(--tf-color-bg-subtle); border-radius: 6px; border-left: 3px solid var(--tf-color-primary);">
+                  <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                      <strong><%= task.title %></strong>
+                      <p class="tf-muted" style="margin-top: 0.3rem; font-size: 0.85rem;">
+                        <%= task.estimate_hours || 0 %>h estimated
+                        <% if task.due_date %>
+                          • Due <%= task.due_date.strftime("%b %-d") %>
+                        <% end %>
+                      </p>
+                    </div>
+                    <span class="tf-badge tf-badge--priority-<%= task.priority >= 4 ? 'high' : task.priority <= 2 ? 'low' : 'muted' %>">
+                      P<%= task.priority %>
+                    </span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="tf-empty-state">
+        <p>No tasks scheduled. Add tasks with due dates to see the timeline.</p>
+      </div>
+    <% end %>
+  </section>
+</div>
+

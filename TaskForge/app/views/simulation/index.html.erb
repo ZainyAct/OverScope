@@ -1,0 +1,137 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title">Simulation</h1>
+    <p class="tf-page-subtitle">
+      What-if scenarios: test different team configurations and priorities.
+    </p>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <section class="tf-card tf-card--subtle">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Run Simulation</h2>
+      <p class="tf-card-meta">
+        Use Monte Carlo simulation to predict outcomes under different scenarios.
+      </p>
+    </div>
+
+    <%= form_with url: simulation_index_path, method: :post, local: false do |f| %>
+      <div class="tf-stack" style="gap: 1rem;">
+        <div class="tf-field">
+          <%= f.label :weeks, "Simulation Period (weeks)", class: "tf-label" %>
+          <%= f.number_field :weeks, value: @default_config[:weeks], min: 1, max: 52, class: "tf-input" %>
+        </div>
+
+        <div class="tf-field">
+          <%= f.label :new_user_capacity, "New User Capacity (hours/week)", class: "tf-label" %>
+          <%= f.number_field :new_user_capacity, value: @default_config[:newUserCapacity], min: 0, max: 80, class: "tf-input" %>
+          <span class="tf-muted" style="font-size: 0.85rem;">
+            Simulate adding a new team member with this capacity.
+          </span>
+        </div>
+
+        <div class="tf-field">
+          <label class="tf-label">
+            <%= f.check_box :drop_low_priority, { checked: @default_config[:dropLowPriority] }, "true", "false" %>
+            Drop low priority tasks (priority 1-2)
+          </label>
+          <span class="tf-muted" style="font-size: 0.85rem; display: block; margin-top: 0.3rem;">
+            Simulate removing low-priority work to focus on high-impact tasks.
+          </span>
+        </div>
+
+        <div class="tf-page-actions">
+          <%= f.submit "Run Simulation", class: "tf-btn", data: { "simulation-target": "submit" } %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Results -->
+    <div id="simulation-results" style="margin-top: 2rem; display: none;">
+      <div class="tf-card" style="padding: 1.5rem;">
+        <h3 style="margin-bottom: 1rem;">Simulation Results</h3>
+        <div id="simulation-output" class="tf-stack"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Example Scenarios -->
+  <section class="tf-card tf-card--subtle" style="margin-top: 1.5rem;">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Example Scenarios</h2>
+    </div>
+    <div class="tf-stack">
+      <div style="padding: 1rem; background: var(--tf-color-bg-subtle); border-radius: 6px;">
+        <strong>Scenario 1: Add a new team member</strong>
+        <p class="tf-muted" style="margin-top: 0.3rem; font-size: 0.9rem;">
+          Set "New User Capacity" to 40 hours/week to see how adding a team member affects completion time.
+        </p>
+      </div>
+      <div style="padding: 1rem; background: var(--tf-color-bg-subtle); border-radius: 6px;">
+        <strong>Scenario 2: Focus on high-priority work</strong>
+        <p class="tf-muted" style="margin-top: 0.3rem; font-size: 0.9rem;">
+          Check "Drop low priority tasks" to see completion time if you only work on priority 3+ tasks.
+        </p>
+      </div>
+      <div style="padding: 1rem; background: var(--tf-color-bg-subtle); border-radius: 6px;">
+        <strong>Scenario 3: Extended timeline</strong>
+        <p class="tf-muted" style="margin-top: 0.3rem; font-size: 0.9rem;">
+          Increase "Simulation Period" to 8-12 weeks to see long-term projections.
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<% content_for :head do %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form[data-controller="simulation"]');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const formData = new FormData(form);
+          const submitBtn = form.querySelector('[type="submit"]');
+          const resultsDiv = document.getElementById('simulation-results');
+          const outputDiv = document.getElementById('simulation-output');
+          
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Running...';
+          outputDiv.innerHTML = '<p>Running simulation...</p>';
+          resultsDiv.style.display = 'block';
+
+          fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.error) {
+              outputDiv.innerHTML = `<div class="tf-alert tf-alert--danger">${data.error}</div>`;
+            } else {
+              outputDiv.innerHTML = `
+                <div class="tf-stack">
+                  <div><strong>Success Rate:</strong> ${(data.successRate * 100).toFixed(1)}%</div>
+                  <div><strong>Weeks to Complete:</strong> ${data.weeksToComplete || 'N/A'}</div>
+                  ${data.summary ? `<div><strong>Summary:</strong> ${JSON.stringify(data.summary, null, 2)}</div>` : ''}
+                </div>
+              `;
+            }
+          })
+          .catch(error => {
+            outputDiv.innerHTML = `<div class="tf-alert tf-alert--danger">Error: ${error.message}</div>`;
+          })
+          .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Run Simulation';
+          });
+        });
+      }
+    });
+  </script>
+<% end %>
+

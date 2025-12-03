@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "OverScope" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="OverScope">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="tf-body">
+    <div class="tf-app-shell">
+      <header class="tf-app-header">
+        <div class="tf-app-header-left">
+          <a href="<%= root_path %>" class="tf-logo">
+            <span class="tf-logo-mark">OS</span>
+            <span class="tf-logo-text">OverScope</span>
+          </a>
+        </div>
+        <% unless controller_name == 'sessions' || controller_name == 'registrations' || controller_name == 'passwords' %>
+          <nav class="tf-app-nav">
+            <%= link_to "Dashboard", root_path, class: "tf-nav-link#{current_page?(root_path) ? ' tf-nav-link--active' : ''}" %>
+            <%= link_to "Projects", projects_path, class: "tf-nav-link#{controller_name == 'projects' ? ' tf-nav-link--active' : ''}" %>
+            <%= link_to "Workload", workload_index_path, class: "tf-nav-link#{controller_name == 'workload' ? ' tf-nav-link--active' : ''}" %>
+            <%= link_to "Schedules", schedules_index_path, class: "tf-nav-link#{controller_name == 'schedules' ? ' tf-nav-link--active' : ''}" %>
+            <%= link_to "Analytics", analytics_index_path, class: "tf-nav-link#{controller_name == 'analytics' ? ' tf-nav-link--active' : ''}" %>
+            <%= link_to "Simulation", simulation_index_path, class: "tf-nav-link#{controller_name == 'simulation' ? ' tf-nav-link--active' : ''}" %>
+            <%= link_to "Activity", activity_index_path, class: "tf-nav-link#{controller_name == 'activity' ? ' tf-nav-link--active' : ''}" %>
+            <%= link_to "Team", team_index_path, class: "tf-nav-link#{controller_name == 'team' ? ' tf-nav-link--active' : ''}" %>
+            <%= link_to "Billing", billing_index_path, class: "tf-nav-link#{controller_name == 'billing' ? ' tf-nav-link--active' : ''}" %>
+            <%= link_to "Settings", settings_index_path, class: "tf-nav-link#{controller_name == 'settings' ? ' tf-nav-link--active' : ''}" %>
+          </nav>
+        <% end %>
+        <div class="tf-app-header-right">
+          <% if user_signed_in? %>
+            <span class="tf-user-pill">
+              <span class="tf-user-avatar"><%= current_user.email.first.upcase %></span>
+              <span class="tf-user-email"><%= current_user.email %></span>
+            </span>
+            <%= button_to "Sign out",
+                          destroy_user_session_path,
+                          method: :delete,
+                          class: "tf-btn tf-btn--ghost tf-btn--sm" %>
+          <% end %>
+        </div>
+      </header>
+
+      <main class="tf-app-main">
+        <div class="tf-flash-region">
+          <% flash.each do |type, message| %>
+            <% next if message.blank? %>
+            <% css_class =
+              case type.to_s
+              when "notice" then "tf-alert tf-alert--success"
+              when "alert"  then "tf-alert tf-alert--danger"
+              else "tf-alert tf-alert--info"
+              end %>
+            <div class="<%= css_class %>">
+              <span><%= message %></span>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="tf-page-container">
+          <% if content_for?(:page_header) %>
+            <header class="tf-page-header">
+              <%= yield :page_header %>
+            </header>
+          <% end %>
+
+          <section class="tf-page-content">
+            <%= yield %>
+          </section>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

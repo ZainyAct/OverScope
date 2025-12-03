@@ -1,0 +1,94 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title">Workload</h1>
+    <p class="tf-page-subtitle">
+      Capacity visualization, overload detection, and task distribution.
+    </p>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <!-- Workload Overview -->
+  <section class="tf-card tf-card--subtle">
+    <div class="tf-card-header">
+      <h2 class="tf-card-title">Team Workload</h2>
+      <p class="tf-card-meta">
+        Current utilization across team members
+      </p>
+    </div>
+
+    <% if @workload_data.any? %>
+      <div class="tf-stack" style="gap: 1rem;">
+        <% @workload_data.each do |data| %>
+          <div class="tf-card" style="padding: 1rem;">
+            <div class="tf-stack">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <strong><%= data[:user].email %></strong>
+                  <p class="tf-muted" style="margin-top: 0.3rem; font-size: 0.9rem;">
+                    <%= data[:tasks_count] %> active tasks
+                  </p>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-size: 1.5rem; font-weight: bold; color: var(--tf-color-primary);">
+                    <%= number_with_precision(data[:utilization_percent], precision: 0) %>%
+                  </div>
+                  <span class="tf-badge <%= badge_class_for_status(data[:status]) %>">
+                    <%= data[:status].humanize %>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Progress Bar -->
+              <div style="margin-top: 0.8rem;">
+                <div style="background: var(--tf-color-muted); height: 8px; border-radius: 4px; overflow: hidden;">
+                  <div style="background: <%= color_for_utilization(data[:utilization_percent]) %>; height: 100%; width: <%= [data[:utilization_percent], 100].min %>% transition: width 0.3s;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 0.4rem; font-size: 0.85rem; color: var(--tf-color-muted);">
+                  <span><%= number_with_precision(data[:current_load_hours], precision: 1) %>h / <%= data[:capacity_hours] %>h</span>
+                  <span><%= data[:capacity_hours] - data[:current_load_hours] %>h available</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="tf-empty-state">
+        <p>No workload data available yet.</p>
+      </div>
+    <% end %>
+  </section>
+
+  <!-- Suggested Workload -->
+  <% if @suggested_workload && @suggested_workload['assignments']&.any? %>
+    <section class="tf-card tf-card--subtle" style="margin-top: 1.5rem;">
+      <div class="tf-card-header">
+        <h2 class="tf-card-title">Suggested Workload Distribution</h2>
+        <p class="tf-card-meta">
+          Optimized by Scala engine (Score: <%= @suggested_workload['score'] || 0 %>)
+        </p>
+      </div>
+      <div class="tf-stack">
+        <% @suggested_workload['assignments'].each do |assignment| %>
+          <div style="padding: 0.8rem; background: var(--tf-color-bg-subtle); border-radius: 6px;">
+            <strong>User:</strong> <%= assignment['userId'] %><br>
+            <strong>Tasks:</strong> <%= assignment['taskIds']&.count || 0 %> tasks<br>
+            <strong>Total Hours:</strong> <%= assignment['totalHours'] || 0 %>h
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+</div>
+
+<% content_for :head do %>
+  <style>
+    .workload-heatmap {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+  </style>
+<% end %>
+

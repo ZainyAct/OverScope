@@ -1,0 +1,32 @@
+<%= form_with(model: project, class: "tf-form") do |f| %>
+  <% if project.errors.any? %>
+    <div class="tf-empty-state" style="border-style: solid; border-color: rgba(248,113,113,0.6);">
+      <strong><%= pluralize(project.errors.count, "error") %> prevented this project from being saved.</strong>
+      <ul style="margin: 0.4rem 0 0; padding-left: 1.2rem; text-align: left; font-size: 0.8rem;">
+        <% project.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="tf-field">
+    <%= f.label :name, class: "tf-label" %>
+    <%= f.text_field :name, class: "tf-input", placeholder: "e.g. Onboarding revamp" %>
+  </div>
+
+  <div class="tf-field">
+    <%= f.label :description, class: "tf-label" %>
+    <%= f.text_area :description,
+                    class: "tf-textarea",
+                    rows: 4,
+                    placeholder: "What is this project trying to achieve?" %>
+  </div>
+
+  <div class="tf-page-actions" style="margin-top: 0.6rem;">
+    <%= f.submit class: "tf-btn" %>
+    <%= link_to "Cancel", projects_path, class: "tf-btn tf-btn--ghost" %>
+  </div>
+<% end %>
+
+

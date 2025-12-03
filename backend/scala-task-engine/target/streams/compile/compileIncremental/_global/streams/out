@@ -1,0 +1,38 @@
+[debug] [zinc] IncrementalCompile -----------
+[debug] IncrementalCompile.incrementalCompile
+[debug] previous = Stamps for: 114 products, 9 sources, 9 libraries
+[debug] current source = Set(${BASE}/src/main/scala/com/taskforge/TaskEngine.scala, ${BASE}/src/main/scala/com/taskforge/services/PriorityEngine.scala, ${BASE}/src/main/scala/com/taskforge/services/CapacityForecaster.scala, ${BASE}/src/main/scala/com/taskforge/services/ScheduleOptimizer.scala, ${BASE}/src/main/scala/com/taskforge/services/StreamingAnalytics.scala, ${BASE}/src/main/scala/com/taskforge/models/DomainModels.scala, ${BASE}/src/main/scala/com/taskforge/services/EstimationService.scala, ${BASE}/src/main/scala/com/taskforge/services/SimulationEngine.scala, ${BASE}/src/main/scala/com/taskforge/db/Database.scala)
+[debug] > initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(${BASE}/src/main/scala/com/taskforge/TaskEngine.scala, ${BASE}/src/main/scala/com/taskforge/db/Database.scala), unmodified = ...),Set(),Set(),API Changes: Set())
+[debug] 
+[debug] Initial source changes:
+[debug] 	removed: Set()
+[debug] 	added: Set()
+[debug] 	modified: Set(${BASE}/src/main/scala/com/taskforge/TaskEngine.scala, ${BASE}/src/main/scala/com/taskforge/db/Database.scala)
+[debug] Invalidated products: Set()
+[debug] External API changes: API Changes: Set()
+[debug] Modified binary dependencies: Set()
+[debug] Initial directly invalidated classes: Set(com.taskforge.TaskEngine.ForecastRequest, com.taskforge.TaskEngine.PriorityRequest, com.taskforge.TaskEngine.SimulateRequest, com.taskforge.TaskEngine.PriorityResponse, com.taskforge.TaskEngine.EstimateRequest, com.taskforge.TaskEngine.FireAlarmResponse, com.taskforge.db.Database, com.taskforge.TaskEngine, com.taskforge.TaskEngine.HealthResponse, com.taskforge.TaskEngine.OptimizeScheduleRequest, com.taskforge.TaskEngine.TaskScoringService, com.taskforge.db.Database.EstimationStats, com.taskforge.TaskEngine.EstimateResponse, com.taskforge.TaskEngine.TaskInput, com.taskforge.TaskEngine.TaskScore, com.taskforge.TaskEngine.TrackAccuracyRequest, com.taskforge.TaskEngine.EstimationStatsResponse)
+[debug] Sources indirectly invalidated by:
+[debug] 	product: Set()
+[debug] 	binary dep: Set()
+[debug] 	external source: Set()
+[debug] All initially invalidated classes: Set(com.taskforge.TaskEngine.ForecastRequest, com.taskforge.TaskEngine.PriorityRequest, com.taskforge.TaskEngine.SimulateRequest, com.taskforge.TaskEngine.PriorityResponse, com.taskforge.TaskEngine.EstimateRequest, com.taskforge.TaskEngine.FireAlarmResponse, com.taskforge.db.Database, com.taskforge.TaskEngine, com.taskforge.TaskEngine.HealthResponse, com.taskforge.TaskEngine.OptimizeScheduleRequest, com.taskforge.TaskEngine.TaskScoringService, com.taskforge.db.Database.EstimationStats, com.taskforge.TaskEngine.EstimateResponse, com.taskforge.TaskEngine.TaskInput, com.taskforge.TaskEngine.TaskScore, com.taskforge.TaskEngine.TrackAccuracyRequest, com.taskforge.TaskEngine.EstimationStatsResponse)
+[debug] All initially invalidated sources:Set(${BASE}/src/main/scala/com/taskforge/TaskEngine.scala, ${BASE}/src/main/scala/com/taskforge/db/Database.scala)
+[debug] Initial set of included nodes: com.taskforge.TaskEngine.ForecastRequest, com.taskforge.TaskEngine.PriorityRequest, com.taskforge.TaskEngine.SimulateRequest, com.taskforge.TaskEngine.PriorityResponse, com.taskforge.TaskEngine.EstimateRequest, com.taskforge.TaskEngine.FireAlarmResponse, com.taskforge.db.Database, com.taskforge.TaskEngine, com.taskforge.TaskEngine.HealthResponse, com.taskforge.TaskEngine.OptimizeScheduleRequest, com.taskforge.TaskEngine.TaskScoringService, com.taskforge.db.Database.EstimationStats, com.taskforge.TaskEngine.EstimateResponse, com.taskforge.TaskEngine.TaskInput, com.taskforge.TaskEngine.TaskScore, com.taskforge.TaskEngine.TrackAccuracyRequest, com.taskforge.TaskEngine.EstimationStatsResponse
+[debug] compilation cycle 1
+[info] compiling 2 Scala sources to /home/zainm/Documents/code/RubyResProj/backend/scala-task-engine/target/scala-2.13/classes ...
+[debug] Returning already retrieved and compiled bridge: /home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala2-sbt-bridge/2.13.12/scala2-sbt-bridge-2.13.12.jar.
+[debug] [zinc] Running cached compiler 36c11c6f for Scala compiler version 2.13.12
+[debug] [zinc] The Scala compiler is invoked with:
+[debug] 	-bootclasspath
+[debug] 	/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.12/scala-library-2.13.12.jar
+[debug] 	-classpath
+[debug] 	/home/zainm/Documents/code/RubyResProj/backend/scala-task-engine/target/scala-2.13/classes:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http_2.13/10.5.3/akka-http_2.13-10.5.3.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http-spray-json_2.13/10.5.3/akka-http-spray-json_2.13-10.5.3.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-stream_2.13/2.8.5/akka-stream_2.13-2.8.5.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor-typed_2.13/2.8.5/akka-actor-typed_2.13-2.8.5.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/org/postgresql/postgresql/42.6.0/postgresql-42.6.0.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.4.3/config-1.4.3.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/com/zaxxer/HikariCP/5.1.0/HikariCP-5.1.0.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-collection-contrib_2.13/0.3.0/scala-collection-contrib_2.13-0.3.0.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http-core_2.13/10.5.3/akka-http-core_2.13-10.5.3.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/io/spray/spray-json_2.13/1.3.6/spray-json_2.13-1.3.6.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.13/2.8.5/akka-actor_2.13-2.8.5.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/2.8.5/akka-protobuf-v3_2.13-2.8.5.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/ssl-config-core_2.13/0.6.1/ssl-config-core_2.13-0.6.1.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-slf4j_2.13/2.8.5/akka-slf4j_2.13-2.8.5.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/2.0.7/slf4j-api-2.0.7.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/3.31.0/checker-qual-3.31.0.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-parsing_2.13/10.5.3/akka-parsing_2.13-10.5.3.jar:/home/zainm/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_2.13/1.0.0/scala-java8-compat_2.13-1.0.0.jar
+[debug] New invalidations:
+[debug] Initial set of included nodes: 
+[debug] Previously invalidated, but (transitively) depend on new invalidations:
+[debug] Final step, transitive dependencies:
+[debug] 	Set()
+[debug] No classes were invalidated.
+[debug] Scala compilation took 6.98754261 s
+[info] done compiling

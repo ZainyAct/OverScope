@@ -1,0 +1,16 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title">New task</h1>
+    <p class="tf-page-subtitle">
+      Capture a new work item for <%= @project.name %>.
+    </p>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <section class="tf-card tf-card--subtle">
+    <%= render "form" %>
+  </section>
+</div>
+
+

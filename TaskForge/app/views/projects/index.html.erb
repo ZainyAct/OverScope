@@ -1,0 +1,61 @@
+<% content_for :page_header do %>
+  <div>
+    <h1 class="tf-page-title">Projects</h1>
+    <p class="tf-page-subtitle">
+      Organize related work into projects and track tasks from idea to completion.
+    </p>
+  </div>
+  <div class="tf-page-actions">
+    <%= link_to "New project", new_project_path, class: "tf-btn" %>
+  </div>
+<% end %>
+
+<div class="tf-page-content">
+  <% if @projects.any? %>
+    <div class="tf-card-grid">
+      <% @projects.each do |project| %>
+        <article class="tf-card tf-card--subtle">
+          <header class="tf-card-header">
+            <div class="tf-stack">
+              <strong class="tf-card-title"><%= project.name %></strong>
+              <% if project.description.present? %>
+                <p class="tf-muted"><%= truncate(project.description, length: 120) %></p>
+              <% else %>
+                <p class="tf-muted">No description yet.</p>
+              <% end %>
+            </div>
+          </header>
+
+          <div class="tf-stack tf-muted">
+            <span>
+              <strong><%= project.tasks.count %></strong>
+              tasks in this project
+            </span>
+            <span>
+              Created <%= time_ago_in_words(project.created_at) %> ago
+            </span>
+          </div>
+
+          <div class="tf-page-actions" style="margin-top: 0.8rem;">
+            <%= link_to "View board", project_path(project), class: "tf-btn tf-btn--secondary" %>
+            <%= link_to "Edit", edit_project_path(project), class: "tf-btn tf-btn--ghost tf-btn--sm" %>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="tf-card tf-card--subtle">
+      <div class="tf-empty-state">
+        <strong>You don’t have any projects yet.</strong>
+        <div style="margin-top: 0.3rem;">
+          Use projects to group tasks by product area, team, or initiative.
+        </div>
+        <div style="margin-top: 0.8rem;">
+          <%= link_to "Create your first project", new_project_path, class: "tf-btn" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+

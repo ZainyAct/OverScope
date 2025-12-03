@@ -1,0 +1,34 @@
+<div class="tf-sign-in-container">
+  <div class="tf-sign-in-card">
+    <h1 class="tf-sign-in-title">Log in</h1>
+    
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "tf-sign-in-form" }) do |f| %>
+      <div class="tf-field">
+        <%= f.label :email, class: "tf-label" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "tf-input tf-input--sign-in" %>
+      </div>
+
+      <div class="tf-field">
+        <%= f.label :password, class: "tf-label" %>
+        <%= f.password_field :password, autocomplete: "current-password", class: "tf-input tf-input--sign-in" %>
+      </div>
+
+      <% if devise_mapping.rememberable? %>
+        <div class="tf-field tf-field--checkbox">
+          <%= f.check_box :remember_me, class: "tf-checkbox" %>
+          <%= f.label :remember_me, "Remember me", class: "tf-checkbox-label" %>
+        </div>
+      <% end %>
+
+      <div class="tf-sign-in-actions">
+        <%= f.submit "Log in", class: "tf-btn tf-btn--sign-in" %>
+      </div>
+    <% end %>
+
+    <div class="tf-sign-in-links">
+      <%= link_to "Sign up", new_registration_path(resource_name), class: "tf-sign-in-link" %>
+      <%= link_to "Forgot your password?", new_password_path(resource_name), class: "tf-sign-in-link" %>
+    </div>
+  </div>
+</div>
+
